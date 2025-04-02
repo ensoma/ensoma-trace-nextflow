@@ -40,6 +40,7 @@ include { FASTQC } from './modules/fastqc.nf'
 include { CONCAT_REFERENCE_FASTAS } from './modules/reference_preprocessing.nf'
 include { EXTRACT_UMIS; TRIM_FASTQS } from './modules/trimming.nf'
 include { BWA_INDEX; BWA_ALIGN } from './modules/alignment.nf'
+include { FILTER_ALIGNMENTS } from './modules/alignment_filtering.nf'
 
 // Run the workflow
 workflow {

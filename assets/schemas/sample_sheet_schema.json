@@ -1,0 +1,47 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "array",
+    "items": {
+      "type": "object",
+      "properties": {
+        "fastq_id": { 
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9\\-_.]+$",
+            "errorMessage": "fastq_id must be a string with only alphanumeric characters, dashes, underscores, and periods."
+        },
+        "sample_name": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9\\-_.]+$",
+            "errorMessage": "sample_name must be a string with only alphanumeric characters, dashes, underscores, and periods."
+        },
+        "technical_group": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9\\-_.]+$",
+            "errorMessage": "technical_group must be a string with only alphanumeric characters, dashes, underscores, and periods."
+        },
+        "payload_vector_fasta": {
+            "type": "string",
+            "pattern": "^\\S+\\.f(ast)?a(\\.gz)?$",
+            "errorMessage": "payload_vector_fasta must end with a valid fasta file extension"
+        },
+        "integration_vector_fasta": {
+            "type": "string",
+            "pattern": "^\\S+\\.f(ast)?a(\\.gz)?$",
+            "errorMessage": "integration_vector_fasta must end with a valid fasta file extension"
+        },
+        "genome_fasta": {
+            "type": "string",
+            "pattern": "^\\S+\\.f(ast)?a(\\.gz)?$",
+            "errorMessage": "genome_fasta must end with a valid fasta file extension"
+        }
+      }
+    },
+    "required": [
+        "fastq_id",
+        "sample_name",
+        "technical_group",
+        "payload_vector_fasta",
+        "integration_vector_fasta",
+        "genome_fasta"
+    ]
+}

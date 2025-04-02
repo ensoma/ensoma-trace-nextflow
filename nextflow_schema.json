@@ -1,0 +1,214 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com///nextflow_schema.json",
+    "title": " pipeline parameters",
+    "description": "",
+    "type": "object",
+    "$defs": {
+        "input_output_options": {
+            "title": "Input/output options",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "description": "Define where the pipeline should find input data and save output data.",
+            "required": [
+                "experiment_name",
+                "outdir",
+                "fastq_dir",
+                "genome_dir",
+                "sample_sheet"
+            ],
+            "properties": {
+                "experiment_name": {
+                    "type": "string",
+                    "default": "TRACE_ISA",
+                    "description": "The name of the TRACE ISA experiment",
+                    "pattern": "^[a-zA-Z0-9\\-_.]",
+                    "fa_icon": "fas fa-flask"
+                },
+                "outdir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "results",
+                    "pattern": "^\\S+$"
+                },
+                "fastq_dir": {
+                    "type": "string",
+                    "description": "The directory containing the FASTQ files",
+                    "pattern": "^\\S+$",
+                    "format": "directory-path",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "genome_dir": {
+                    "type": "string",
+                    "description": "The directory containing the payload and genome FASTA files",
+                    "pattern": "^\\S+$",
+                    "format": "directory-path",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "sample_sheet": {
+                    "type": "string",
+                    "fa_icon": "fas fa-file-alt",
+                    "description": "The CSV sample sheet",
+                    "pattern": "^\\S+\\.csv$",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "schema": "./assets/schemas/sample_sheet_schema.json"
+                }
+            }
+        },
+        "fastq_trimming_options": {
+            "title": "FASTQ trimming options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "R1_adapter": {
+                    "type": "string",
+                    "default": "NNNNCGAGTTTTAATGACTCCAACT",
+                    "fa_icon": "fas fa-dna",
+                    "pattern": "^[ATGCNatgcn]+$",
+                    "description": "The sequence of the R1 adapter in the reads"
+                },
+                "R2_adapter": {
+                    "type": "string",
+                    "default": "AGTGGCACAGCAGTTAGGNNNNNNNNAGATGTGTATAAGAGACAG",
+                    "fa_icon": "fas fa-dna",
+                    "pattern": "^[ATGCNatgcn]+$",
+                    "description": "The sequence of the R2 adapter in the reads"
+                },
+                "IR_seq": {
+                    "type": "string",
+                    "default": "TAAGTGTATGTAAACTTCCGACTTCAACTG",
+                    "fa_icon": "fas fa-dna",
+                    "pattern": "^[ATGCNatgcn]+$",
+                    "description": "Th sequence of the IR in the reads"
+                },
+                "min_length": {
+                    "type": "integer",
+                    "default": 20,
+                    "fa_icon": "fas fa-ruler-horizontal",
+                    "description": "Minimum FASTQ read length allowed",
+                    "minimum": 1,
+                    "maximum": 500
+                },
+                "allowed_errors_r1_adapter": {
+                    "type": "integer",
+                    "default": 4,
+                    "fa_icon": "fas fa-exclamation-circle",
+                    "description": "Allowed errors for expected R1 adapter sequence",
+                    "minimum": 0,
+                    "maximum": 10
+                },
+                "allowed_errors_ir": {
+                    "type": "integer",
+                    "default": 4,
+                    "fa_icon": "fas fa-exclamation-circle",
+                    "description": "Allowed errors for expected IR sequence",
+                    "minimum": 0,
+                    "maximum": 10
+                },
+                "allowed_errors_adapter_readthrough": {
+                    "type": "integer",
+                    "default": 4,
+                    "fa_icon": "fas fa-exclamation-circle",
+                    "description": "Allowed errors to detect adapter readthrough",
+                    "minimum": 0,
+                    "maximum": 10
+                },
+                "allowed_errors_ir_readthrough": {
+                    "type": "integer",
+                    "default": 3,
+                    "fa_icon": "fas fa-exclamation-circle",
+                    "description": "allowed errors to detect IR readthrough",
+                    "minimum": 0,
+                    "maximum": 10
+                }
+            },
+            "fa_icon": "fas fa-cut"
+        },
+        "alignment_filtering_options": {
+            "title": "Alignment filtering options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "exclude_flags": {
+                    "type": "integer",
+                    "default": 3852,
+                    "fa_icon": "fas fa-flag",
+                    "minimum": 0,
+                    "maximum": 10000,
+                    "description": "Flags for samtools to exclude from alignments"
+                },
+                "required_flags": {
+                    "type": "integer",
+                    "default": 3,
+                    "fa_icon": "fas fa-flag",
+                    "minimum": 0,
+                    "maximum": 10000,
+                    "description": "Flags for samtools to require for alignments"
+                },
+                "min_mapq": {
+                    "type": "integer",
+                    "default": 30,
+                    "fa_icon": "fas fa-arrow-down",
+                    "minimum": 0,
+                    "maximum": 60,
+                    "description": "The minimum mapping quality score to retain a read"
+                },
+                "softclip_threshold": {
+                    "type": "integer",
+                    "default": 5,
+                    "fa_icon": "fas fa-eye-slash",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "The maximum number of allowed 5' softclipped bases"
+                }
+            },
+            "fa_icon": "fas fa-filter"
+        },
+        "insertion_site_options": {
+            "title": "Insertion site options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "grouping_distance": {
+                    "type": "integer",
+                    "default": 5,
+                    "fa_icon": "fas fa-ruler-horizontal",
+                    "minimum": 1,
+                    "maximum": 100,
+                    "description": "Group integration sites within this distance"
+                },
+                "grouping_mode": {
+                    "type": "string",
+                    "default": "median",
+                    "fa_icon": "fas fa-chart-line",
+                    "enum": [
+                        "mean",
+                        "median"
+                    ],
+                    "description": "Whether to take the mean or median position if multiple integration sites to merge have the same score"
+                }
+            },
+            "fa_icon": "fas fa-search-location"
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/fastq_trimming_options"
+        },
+        {
+            "$ref": "#/$defs/alignment_filtering_options"
+        },
+        {
+            "$ref": "#/$defs/insertion_site_options"
+        }
+    ]
+}

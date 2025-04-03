@@ -41,6 +41,7 @@ include { CONCAT_REFERENCE_FASTAS } from './modules/reference_preprocessing.nf'
 include { EXTRACT_UMIS; TRIM_FASTQS } from './modules/trimming.nf'
 include { BWA_INDEX; BWA_ALIGN } from './modules/alignment.nf'
 include { FILTER_ALIGNMENTS } from './modules/alignment_filtering.nf'
+include { CALL_INTEGRATION_SITES; AGGREGATE_INTEGRATION_SITES } from './modules/integration_sites.nf'
 
 // Run the workflow
 workflow {
@@ -85,4 +86,21 @@ workflow {
     
     // Filter the alignments
     FILTER_ALIGNMENTS( BWA_ALIGN.out.unfiltered_sam )
+
+    // Call the integration sites
+    FILTER_ALIGNMENTS.out.filtered_bams
+        .map { it ->
+            def sample_id = it[0]
+            def filtered_bam = it[3].find { it.name.endsWith('.bam') }
+            def filtered_bai = it[3].find { it.name.endsWith('.bai') }
+
+            return [ sample_id, filtered_bam, filtered_bai ]
+        } |
+        CALL_INTEGRATION_SITES
+
+    // Aggregate the integration sites
+    CALL_INTEGRATION_SITES.out.integration_sites_bed
+        .map { it[1] }
+        .collect() |
+        AGGREGATE_INTEGRATION_SITES
 }

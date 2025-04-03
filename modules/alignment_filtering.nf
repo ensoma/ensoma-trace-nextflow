@@ -1,19 +1,20 @@
 
 process FILTER_ALIGNMENTS {
     tag "Filtering alignments: ${sample_id}"
-    publishDir \ 
-        "${params.outdir}/alignments/flag_filtered/", \ 
+    publishDir \
+        "${params.outdir}/alignments/flag_filtered/", \
         mode: 'copy', pattern: "*.flag_filtered.*"
     publishDir \
-        "${params.outdir}/alignments/deduped/", \ 
+        "${params.outdir}/alignments/deduped/", \
         mode: 'copy', pattern: "*.deduped.*"
     publishDir \
-        "${params.outdir}/alignments/filtered_final/", \ 
+        "${params.outdir}/alignments/filtered_final/", \
         mode: 'copy', pattern: "*.filtered_final.*"
     publishDir \
-        "${params.outdir}/alignments/isatools_discarded/", \ 
+        "${params.outdir}/alignments/isatools_discarded/", \
         mode: 'copy', pattern: "*_discarded.*"
     label "process_medium"
+    label "isatoolkit"
 
     input:
     tuple \
@@ -40,18 +41,18 @@ process FILTER_ALIGNMENTS {
     # 1) Filter based on flags and quality scores.
     # 2) Then position sort.
     samtools view \\
-            -@ ${task.cpus} \\
+            -@ "${task.cpus}" \\
             -u \\
-            -F ${params.exclude_flags} \\
-            -f ${params.required_flags} \\
-            -q ${params.min_mapq} \\
-            ${unfiltered_sam} |
+            -F "${params.exclude_flags}" \\
+            -f "${params.required_flags}" \\
+            -q "${params.min_mapq}" \\
+            "${unfiltered_sam}" |
         samtools sort \\
-            -@ ${task.cpus} \\
-            -m ${max_memory} \\
+            -@ "${task.cpus}" \\
+            -m "${max_memory}" \\
             -O 'BAM' \\
             --write-index \\
-            -o "${sample_id}.flag_filtered.bam##idx##"${sample_id}.flag_filtered.bam.bai"
+            -o "${sample_id}.flag_filtered.bam##idx##${sample_id}.flag_filtered.bam.bai"
 
     # 1) Deduplicate with UMI-tools.
     # 2) Index the deduplicated BAM file.
@@ -81,10 +82,10 @@ process FILTER_ALIGNMENTS {
             -d "${sample_id}.orphans_discarded.bam" \\
             -u |
         samtools sort \\
-            -@ ${task.cpus} \\
+            -@ "${task.cpus}" \\
             -O 'BAM' \\
             --write-index \\
-            -m ${max_memory} \\
+            -m "${max_memory}" \\
             -o "${sample_id}.filtered_final.bam##idx##${sample_id}.filtered_final.bam.bai"
     """
 }
